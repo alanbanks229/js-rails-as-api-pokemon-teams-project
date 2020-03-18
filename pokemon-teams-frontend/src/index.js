@@ -25,7 +25,7 @@ function makeCard(trainer){
 
     let addBtn = document.createElement('button')
     addBtn.dataset.trainerId = trainer.id
-    addBtn.addEventListener('click', console.log("hi"))
+    addBtn.addEventListener('click', (event) => addPokemon(event,trainer))
     addBtn.innerText = "Add Pokemon"
 
     let pokemonUl = document.createElement('ul')
@@ -40,4 +40,20 @@ function makeCard(trainer){
     new_div.append(trainer_name, addBtn, pokemonUl)
     trainer_container.appendChild(new_div)
     //console.log(trainer)
+}
+
+function addPokemon(event,trainer) {
+    let newPoke = {nickname: "Jeff", species: "Kakuna", trainer_id: trainer.id}
+    let current_trainer = trainer
+    current_trainer.pokemons.push(newPoke)
+    fetch(POKEMONS_URL,{
+        method:"POST",
+        headers:{
+            "Content-Type": "application/json",
+            "Accepts": "application/json"    
+        },
+        body: JSON.stringify({"trainer_id": trainer.id})
+    }) 
+        .then(resp => resp.json())
+        .then(json => makeCard(current_trainer))
 }
