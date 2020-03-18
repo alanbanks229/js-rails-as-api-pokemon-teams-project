@@ -16,5 +16,28 @@ function fetchTrainers(){
 }
 
 function makeCard(trainer){
-    console.log(trainer)
+    let trainer_container = document.querySelector('.Trainer_Container')
+    let new_div = document.createElement('div')
+    new_div.className = "card"
+    new_div.dataset.trainerId = trainer.id
+    let trainer_name = document.createElement('h2')
+    trainer_name.innerText = `${trainer.name}`
+
+    let addBtn = document.createElement('button')
+    addBtn.dataset.trainerId = trainer.id
+    addBtn.addEventListener('click', console.log("hi"))
+    addBtn.innerText = "Add Pokemon"
+
+    let pokemonUl = document.createElement('ul')
+    //Making an iterator for pokemons owned by trainer
+    trainer.pokemons.forEach( pokemonObject => {
+        let newPokemonLi = document.createElement('li')
+        newPokemonLi.innerText = `${pokemonObject.species} (${pokemonObject.nickname})`
+        let releaseBtn = document.createElement('button')
+        releaseBtn.addEventListener('click', console.log("released"))
+        pokemonUl.append(newPokemonLi, releaseBtn)
+    })
+    new_div.append(trainer_name, addBtn, pokemonUl)
+    trainer_container.appendChild(new_div)
+    //console.log(trainer)
 }
