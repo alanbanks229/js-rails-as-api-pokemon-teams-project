@@ -35,11 +35,14 @@ function makeCard(trainer){
             let newPokemonLi = document.createElement('li')
             newPokemonLi.innerText = `${pokemonObject.species} (${pokemonObject.nickname})`
             let releaseBtn = document.createElement('button')
-            releaseBtn.addEventListener('click', console.log("released"))
+            releaseBtn.innerText = "Release"
+            releaseBtn.className = "release"
+            releaseBtn.addEventListener('click', (event) => removePokemon(event,trainer))
+            newPokemonLi.appendChild(releaseBtn)
             pokemonUl.append(newPokemonLi, releaseBtn)
         })
         trainer_card.append(pokemonUl)
-        trainer_container.appendChild(trainer_card)
+        // trainer_container.appendChild(trainer_card)
     } else {
         let new_div = document.createElement('div')
         new_div.className = "card"
@@ -58,7 +61,10 @@ function makeCard(trainer){
             let newPokemonLi = document.createElement('li')
             newPokemonLi.innerText = `${pokemonObject.species} (${pokemonObject.nickname})`
             let releaseBtn = document.createElement('button')
-            releaseBtn.addEventListener('click', console.log("released"))
+            releaseBtn.addEventListener('click', (event) => removePokemon(event,trainer))
+            releaseBtn.innerText = "Release"
+            releaseBtn.className = "release"
+            newPokemonLi.appendChild(releaseBtn)
             pokemonUl.append(newPokemonLi, releaseBtn)
         })
         new_div.append(trainer_name, addBtn, pokemonUl)
@@ -70,9 +76,27 @@ function makeCard(trainer){
 function addPokemon(event,trainer) {
     let newPoke = {nickname: "Jeff", species: "Kakuna", trainer_id: trainer.id}
     let current_trainer = trainer
-    current_trainer.pokemons.push(newPoke)
-    fetch(POKEMONS_URL,{
-        method:"POST",
+    if (current_trainer.pokemons.length < 6){
+        current_trainer.pokemons.push(newPoke)
+        fetch(POKEMONS_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type": "application/json",
+                "Accepts": "application/json"    
+            },
+            body: JSON.stringify({"trainer_id": trainer.id})
+        }) 
+        .then(resp => resp.json())
+        .then(json => makeCard(current_trainer))
+    } else {
+        return 0
+    }
+}
+
+function removePokemon(event,trainer) {
+    debugger
+    fetch(POKEMONS_URL + `${pokemon.id}`,{
+        method:"DELETE",
         headers:{
             "Content-Type": "application/json",
             "Accepts": "application/json"    
