@@ -17,28 +17,53 @@ function fetchTrainers(){
 
 function makeCard(trainer){
     let trainer_container = document.querySelector('.Trainer_Container')
-    let new_div = document.createElement('div')
-    new_div.className = "card"
-    new_div.dataset.trainerId = trainer.id
-    let trainer_name = document.createElement('h2')
-    trainer_name.innerText = `${trainer.name}`
 
-    let addBtn = document.createElement('button')
-    addBtn.dataset.trainerId = trainer.id
-    addBtn.addEventListener('click', (event) => addPokemon(event,trainer))
-    addBtn.innerText = "Add Pokemon"
+    if (document.querySelector(`[data-trainer-id="${trainer.id}"]`)){
+        //Below we target the already existing trainer's ul children (which are li elements)... 
+        //and reset it.
 
-    let pokemonUl = document.createElement('ul')
-    //Making an iterator for pokemons owned by trainer
-    trainer.pokemons.forEach( pokemonObject => {
-        let newPokemonLi = document.createElement('li')
-        newPokemonLi.innerText = `${pokemonObject.species} (${pokemonObject.nickname})`
-        let releaseBtn = document.createElement('button')
-        releaseBtn.addEventListener('click', console.log("released"))
-        pokemonUl.append(newPokemonLi, releaseBtn)
-    })
-    new_div.append(trainer_name, addBtn, pokemonUl)
-    trainer_container.appendChild(new_div)
+        //targets already exiting player card div
+        let trainer_card = document.querySelector(`[data-trainer-id="${trainer.id}"]`)
+
+        //gets trainer's ul 
+        let pokemonUl = trainer_card.children[2]
+
+        //clears ul li items
+        pokemonUl.innerHTML = ""
+
+        trainer.pokemons.forEach( pokemonObject => {
+            let newPokemonLi = document.createElement('li')
+            newPokemonLi.innerText = `${pokemonObject.species} (${pokemonObject.nickname})`
+            let releaseBtn = document.createElement('button')
+            releaseBtn.addEventListener('click', console.log("released"))
+            pokemonUl.append(newPokemonLi, releaseBtn)
+        })
+        trainer_card.append(pokemonUl)
+        trainer_container.appendChild(trainer_card)
+    } else {
+        let new_div = document.createElement('div')
+        new_div.className = "card"
+        new_div.dataset.trainerId = trainer.id
+        let trainer_name = document.createElement('h2')
+        trainer_name.innerText = `${trainer.name}`
+        
+        let addBtn = document.createElement('button')
+        addBtn.dataset.trainerId = trainer.id
+        addBtn.addEventListener('click', (event) => addPokemon(event,trainer))
+        addBtn.innerText = "Add Pokemon"
+        let pokemonUl = document.createElement('ul')
+
+        //Below is not Dry
+        trainer.pokemons.forEach( pokemonObject => {
+            let newPokemonLi = document.createElement('li')
+            newPokemonLi.innerText = `${pokemonObject.species} (${pokemonObject.nickname})`
+            let releaseBtn = document.createElement('button')
+            releaseBtn.addEventListener('click', console.log("released"))
+            pokemonUl.append(newPokemonLi, releaseBtn)
+        })
+        new_div.append(trainer_name, addBtn, pokemonUl)
+        trainer_container.appendChild(new_div)
+    }
     //console.log(trainer)
 }
 
@@ -54,6 +79,6 @@ function addPokemon(event,trainer) {
         },
         body: JSON.stringify({"trainer_id": trainer.id})
     }) 
-        .then(resp => resp.json())
-        .then(json => makeCard(current_trainer))
+    .then(resp => resp.json())
+    .then(json => makeCard(current_trainer))
 }
