@@ -37,6 +37,7 @@ function makeCard(trainer){
             let releaseBtn = document.createElement('button')
             releaseBtn.innerText = "Release"
             releaseBtn.className = "release"
+            releaseBtn.dataset.pokemonId = pokemonObject.id
             releaseBtn.addEventListener('click', (event) => removePokemon(event,trainer))
             newPokemonLi.appendChild(releaseBtn)
             pokemonUl.append(newPokemonLi, releaseBtn)
